@@ -235,9 +235,7 @@ generate_pm2_file() {
   # 伪装 X 执行文件
   RELEASE_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
   cp ${FLIE_PATH}web ${FLIE_PATH}${RELEASE_RANDOMNESS}
-
-  cp ${FLIE_PATH}config.json > ${FLIE_PATH}index.json
-  sed -i "s#UUID#$UUID#g;s#VMESS_WSPATH#$VMESS_WSPATH#g;s#VLESS_WSPATH#$VLESS_WSPATH#g" ${FLIE_PATH}index.json
+  cp ${FLIE_PATH}config.json ${FLIE_PATH}index.json
   cat > /tmp/ecosystem.config.js << EOF
 module.exports = {
   "apps":[
