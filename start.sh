@@ -21,7 +21,7 @@ export ARGO_DOMAIN="$ARGO_DOMAIN"
 export ARGO_AUTH="$ARGO_AUTH"
 
 cleanup_files() {
-  rm -rf ${FLIE_PATH}argo.log ${FLIE_PATH}argo.sh ${FLIE_PATH}web.sh ${FLIE_PATH}nezha.sh ${FLIE_PATH}list.txt ${FLIE_PATH}sub.txt
+  rm -rf ${FLIE_PATH}argo.log ${FLIE_PATH}list.txt ${FLIE_PATH}sub.txt
 }
 cleanup_files
 
