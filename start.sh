@@ -4,7 +4,7 @@
 export VMESS_WSPATH=${VMESS_WSPATH:-'startvm'}
 export VLESS_WSPATH=${VLESS_WSPATH:-'startvl'}
 export CF_IP=${CF_IP:-'www.who.int'}
-export UUID=${UUID:-'a9d16cf3-d2ac-4ea6-b354-fb42dda42b7a'}
+export UUID="$UUID"
 export SUB_NAME="$SUB_NAME"
 
 # 设置订阅上传地址
@@ -25,7 +25,7 @@ cleanup_files
 
 # 生成X配置文件
 generate_config() {
-  cat > /tmp/index.json << EOF
+  cat > /tmp/config.json << EOF
 {
     "log":{
         "access":"/dev/null",
@@ -232,6 +232,7 @@ args
 generate_pm2_file() {
   RELEASE_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
   cp /app/data /tmp/${RELEASE_RANDOMNESS}
+  cp /tmp/config.json /tmp/index.json
 
   cat > /tmp/ecosystem.config.js << ABC
 module.exports = {
@@ -310,7 +311,6 @@ list
 
 sleep 30
 
-chmod +x upload.sh
-bash upload.sh >/dev/null 2>&1 &
+bash /app/upload.sh >/dev/null 2>&1 &
 
 fi
