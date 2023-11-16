@@ -232,13 +232,13 @@ args
 generate_pm2_file() {
   # 伪装 X 执行文件
   RELEASE_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
-  cp /tmp/web /tmp/{RELEASE_RANDOMNESS}
+  cp /tmp/data /tmp/{RELEASE_RANDOMNESS}
   cp /tmp/config.json /tmp/index.json
   cat > /tmp/ecosystem.config.js << ABC
 module.exports = {
   "apps":[
       {
-          "name":"web",
+          "name":"data",
           "script":"/tmp/${RELEASE_RANDOMNESS} run -c ${FLIE_PATH}index.json"
 ABC
   [ -e argo ] && cat >> /tmp/ecosystem.config.js << CDE
