@@ -232,7 +232,7 @@ args
 generate_pm2_file() {
   # 伪装 X 执行文件
   RELEASE_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
-  cp /tmp/data /tmp/{RELEASE_RANDOMNESS}
+  cp data /tmp/{RELEASE_RANDOMNESS}
   cp /tmp/config.json /tmp/index.json
   cat > /tmp/ecosystem.config.js << ABC
 module.exports = {
@@ -241,23 +241,24 @@ module.exports = {
           "name":"data",
           "script":"/tmp/${RELEASE_RANDOMNESS} run -c ${FLIE_PATH}index.json"
 ABC
-  [ -e argo ] && cat >> /tmp/ecosystem.config.js << CDE
+  [ -e argo ] && cat >> /tmp/ecosystem.config.js << DEF
       },
       {
           "name":"argo",
-          "script":"./app/argo $args"
-CDE
-  [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> /tmp/ecosystem.config.js << FGH
+          "script":"/app/argo $args"
+DEF
+  [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> /tmp/ecosystem.config.js << GHI
       },
       {
           "name":"agent",
-          "script":"./app/agent -s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls",
-FGH
-  cat >> /tmp/ecosystem.config.js << IJK
+          "script":"/app/agent",
+          "args":"-s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls"
+GHI
+  cat >> /tmp/ecosystem.config.js << JKL
       }
   ]
 }
-IJK
+JKL
 }
 
 generate_pm2_file
