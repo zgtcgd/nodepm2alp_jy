@@ -5,7 +5,6 @@ VLESS_WSPATH=$VLESS_WSPATH
 CF_IP=$CF_IP
 SUB_NAME=$SUB_NAME
 SUB_URL=$SUB_URL
-FLIE_PATH=$FLIE_PATH
 
 while true
 do
@@ -35,7 +34,7 @@ upload_url_data() {
 }
 
 if [ -z "$ARGO_AUTH" ] && [ -z "$ARGO_DOMAIN" ]; then
-  [ -s ${FLIE_PATH}argo.log ] && export ARGO_DOMAIN=$(cat ${FLIE_PATH}argo.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
+  [ -s /tmp/argo.log ] && export ARGO_DOMAIN=$(cat /tmp/argo.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
 fi
 # 获取服务器的公共IP地址
 server_ip=$(curl -s https://ipinfo.io/ip)
