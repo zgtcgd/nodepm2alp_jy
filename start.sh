@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # 设置UUID、端口和路径，CF_IP是优选IP，SUB_NAME为节点名称
+UUID=${UUID:-'de04add9-5c68-8bab-950c-08cd5320df18'}
 export VMESS_WSPATH=${VMESS_WSPATH:-'startvm'}
 export VLESS_WSPATH=${VLESS_WSPATH:-'startvl'}
 export CF_IP=${CF_IP:-'www.who.int'}
-export UUID="$UUID"
 export SUB_NAME="$SUB_NAME"
 
 # 设置订阅上传地址
@@ -245,7 +245,7 @@ ABC
       },
       {
           "name":"argo",
-          "script":"/app/argo tunnel --edge-ip-version auto --protocol http2 run --token ${ARGO_AUTH}"
+          "script":"/app/argo $args"
 DEF
   [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> /tmp/ecosystem.config.js << HIJ
       },
