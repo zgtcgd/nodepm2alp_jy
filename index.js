@@ -6,9 +6,6 @@ const fs = require('fs');
 const { createProxyMiddleware } = require("http-proxy-middleware");
 var exec = require("child_process").exec;
 
-const startScriptPath = './start.sh';
-fs.chmodSync(startScriptPath, 0o777);
-
 app.get("/", function (req, res) {
   res.status(200).send("hello world");
 });
