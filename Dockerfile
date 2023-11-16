@@ -13,7 +13,7 @@ ENV PM2_HOME=/tmp
 RUN apk update &&\
     apk add --no-cache bash wget curl procps &&\
     wget -q -O ${FLIE_PATH}web https://raw.githubusercontent.com/kahunama/myfile/main/my/xray &&\
-    wget -q -O ${FLIE_PATH}nezha-agent https://raw.githubusercontent.com/kahunama/myfile/main/nezha/nezha-agent && \
+    wget -q -O ${FLIE_PATH}nezha-agent https://raw.githubusercontent.com/kahunama/myfile/main/nezha/nezha-agent &&\
     wget -q -O ${FLIE_PATH}argo https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 &&\
     chmod -v 755 ${FLIE_PATH}web ${FLIE_PATH}nezha-agent ${FLIE_PATH}argo start.sh upload.sh &&\
     npm install -r package.json &&\
