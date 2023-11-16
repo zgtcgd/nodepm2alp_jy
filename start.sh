@@ -236,31 +236,30 @@ generate_pm2_file() {
   RELEASE_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
   cp ${FLIE_PATH}web ${FLIE_PATH}${RELEASE_RANDOMNESS}
   cp ${FLIE_PATH}config.json ${FLIE_PATH}index.json
-  cat > /tmp/ecosystem.config.js << EOF
+  cat > /tmp/ecosystem.config.js << ABC
 module.exports = {
   "apps":[
       {
           "name":"web",
-          "script":"${FLIE_PATH}${RELEASE_RANDOMNESS} run -c ${FLIE_PATH}index.json"
-EOF
-  [ -e ${FLIE_PATH}argo ] && cat >> /tmp/ecosystem.config.js << EOF
+          "script":".${FLIE_PATH}${RELEASE_RANDOMNESS} run -c ${FLIE_PATH}index.json"
+ABC
+  [ -e ${FLIE_PATH}argo ] && cat >> /tmp/ecosystem.config.js << CDE
       },
       {
           "name":"argo",
-          "script":"${FLIE_PATH}argo $args"
-EOF
-  [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> /tmp/ecosystem.config.js << EOF
+          "script":".${FLIE_PATH}argo $args"
+CDE
+  [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> /tmp/ecosystem.config.js << FGH
       },
       {
           "name":"agent",
-          "script":"${FLIE_PATH}nezha-agent",
-          "args":"-s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls"
-EOF
-  cat >> /tmp/ecosystem.config.js << EOF
+          "script":".${FLIE_PATH}nezha-agent -s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls",
+FGH
+  cat >> /tmp/ecosystem.config.js << IJK
       }
   ]
 }
-EOF
+IJK
 }
 
 generate_pm2_file
