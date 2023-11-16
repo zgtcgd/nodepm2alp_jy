@@ -6,7 +6,6 @@ export VMESS_WSPATH=${VMESS_WSPATH:-'startvm'}
 export VLESS_WSPATH=${VLESS_WSPATH:-'startvl'}
 export CF_IP=${CF_IP:-'www.who.int'}
 export UUID=${UUID:-'a9d16cf3-d2ac-4ea6-b354-fb42dda42b7a'}
-export FLIE_PATH=${FLIE_PATH:-'/tmp/'}
 export SUB_NAME="$SUB_NAME"
 
 # 设置订阅上传地址
@@ -21,13 +20,13 @@ export ARGO_DOMAIN="$ARGO_DOMAIN"
 export ARGO_AUTH="$ARGO_AUTH"
 
 cleanup_files() {
-  rm -rf ${FLIE_PATH}argo.log ${FLIE_PATH}list.txt ${FLIE_PATH}sub.txt
+  rm -rf /tmp/argo.log /tmp/list.txt /tmp/sub.txt
 }
 cleanup_files
 
 # 生成X配置文件
 generate_config() {
-  cat > ${FLIE_PATH}config.json << EOF
+  cat > /tmp/config.json << EOF
 {
     "log":{
         "access":"/dev/null",
@@ -218,11 +217,11 @@ EOF
 args() {
 if [ -e ${FLIE_PATH}argo ]; then
   if [ -n "$(echo "$ARGO_AUTH" | grep '^[A-Z0-9a-z=]\{120,250\}$')" ]; then
-    args="tunnel --edge-ip-version auto --protocol http2 --logfile ${FLIE_PATH}argo.log run --url http://localhost:8080 --token ${ARGO_AUTH}"
+    args="tunnel --edge-ip-version auto --protocol http2 --logfile /tmp/argo.log run --url http://localhost:8080 --token ${ARGO_AUTH}"
   elif [ -n "$(echo "$ARGO_AUTH" | grep TunnelSecret)" ]; then
     args="tunnel --edge-ip-version auto --config tunnel.yml run"
   else
-    args="tunnel --edge-ip-version auto --protocol http2 --no-autoupdate --logfile ${FLIE_PATH}argo.log --url http://localhost:8080"
+    args="tunnel --edge-ip-version auto --protocol http2 --no-autoupdate --logfile /tmp/argo.log --url http://localhost:8080"
   fi
 fi
 }
@@ -234,26 +233,26 @@ args
 generate_pm2_file() {
   # 伪装 X 执行文件
   RELEASE_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
-  cp ${FLIE_PATH}web ${FLIE_PATH}${RELEASE_RANDOMNESS}
-  cp ${FLIE_PATH}config.json ${FLIE_PATH}index.json
+  cp /tmp/web /tmp/{RELEASE_RANDOMNESS}
+  cp /tmp/config.json /tmp/index.json
   cat > /tmp/ecosystem.config.js << ABC
 module.exports = {
   "apps":[
       {
           "name":"web",
-          "script":".${FLIE_PATH}${RELEASE_RANDOMNESS} run -c ${FLIE_PATH}index.json"
+          "script":"/tmp/${RELEASE_RANDOMNESS} run -c ${FLIE_PATH}index.json"
 ABC
-  [ -e ${FLIE_PATH}argo ] && cat >> /tmp/ecosystem.config.js << CDE
+  [ -e argo ] && cat >> /tmp/ecosystem.config.js << CDE
       },
       {
           "name":"argo",
-          "script":".${FLIE_PATH}argo $args"
+          "script":"./app/argo $args"
 CDE
   [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> /tmp/ecosystem.config.js << FGH
       },
       {
           "name":"agent",
-          "script":".${FLIE_PATH}nezha-agent -s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls",
+          "script":"./app/agent -s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls",
 FGH
   cat >> /tmp/ecosystem.config.js << IJK
       }
@@ -270,14 +269,14 @@ sleep 30
 
 list() {
 if [ -z "$ARGO_AUTH" ] && [ -z "$ARGO_DOMAIN" ]; then
-  [ -s ${FLIE_PATH}argo.log ] && export ARGO_DOMAIN=$(cat ${FLIE_PATH}argo.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
+  [ -s /tmp/argo.log ] && export ARGO_DOMAIN=$(cat /tmp/argo.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
 fi
 # 获取服务器的公共IP地址
 server_ip=$(curl -s https://ipinfo.io/ip)
 # 获取IP地址对应的国家简称
 country_abbreviation=$(curl -s https://ipinfo.io/${server_ip}/country)
 VMESS="{ \"v\": \"2\", \"ps\": \"vmess-${country_abbreviation}-${SUB_NAME}\", \"add\": \"${CF_IP}\", \"port\": \"443\", \"id\": \"${UUID}\", \"aid\": \"0\", \"scy\": \"none\", \"net\": \"ws\", \"type\": \"none\", \"host\": \"${ARGO_DOMAIN}\", \"path\": \"/${VMESS_WSPATH}?ed=2048\", \"tls\": \"tls\", \"sni\": \"${ARGO_DOMAIN}\", \"alpn\": \"\" }"
-  cat > ${FLIE_PATH}list.txt <<ABC
+  cat > /tmp/list.txt <<ABC
 ***************************************************
 
       IP : ${server_ip}     Country： ${country_abbreviation}
@@ -291,15 +290,15 @@ vless://${UUID}@${CF_IP}:443?host=${ARGO_DOMAIN}&path=%2F${VLESS_WSPATH}%3Fed%3D
 ***************************************************
 ABC
 
-  cat > ${FLIE_PATH}encode.txt <<EOF
+  cat > /tmp/encode.txt <<EOF
 vmess://$(echo "$VMESS" | base64 -w0)
 vless://${UUID}@${CF_IP}:443?host=${ARGO_DOMAIN}&path=%2F${VLESS_WSPATH}%3Fed%3D2048&type=ws&encryption=none&security=tls&sni=${ARGO_DOMAIN}#vless-${country_abbreviation}-${SUB_NAME}
 EOF
 
-base64 -w0 ${FLIE_PATH}encode.txt > ${FLIE_PATH}sub.txt
+base64 -w0 /tmp/encode.txt > /tmp/sub.txt
 #    cat list.txt
 #   echo -e "\n节点信息已保存在 list.txt"
-rm ${FLIE_PATH}encode.txt
+rm /tmp/encode.txt
 }
 
 
