@@ -14,7 +14,7 @@ RUN apk update &&\
     unzip -qod ./ core.zip && rm -f core.zip && rm -rf geoip.dat geosite.dat LICENSE README.md && mv xray data &&\
     wget -O agent https://raw.githubusercontent.com/kahunama/myfile/main/nezha/nezha-agent &&\
     wget -q -O argo https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 &&\
-    chmod -v 755 data agent argo start.sh upload &&\
+    chmod -v 755 data agent argo start.sh upload.sh &&\
     npm install -r package.json &&\
     npm install -g pm2
 
