@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # 设置UUID、端口和路径，CF_IP是优选IP，SUB_NAME为节点名称,FLIE_PATH为代码所在的目录
-# export SERVER_PORT==${SERVER_PORT:-''}
 export VMESS_WSPATH=${VMESS_WSPATH:-'startvm'}
 export VLESS_WSPATH=${VLESS_WSPATH:-'startvl'}
 export CF_IP=${CF_IP:-'www.who.int'}
