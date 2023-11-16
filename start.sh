@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# 设置UUID、端口和路径，CF_IP是优选IP，SUB_NAME为节点名称,FLIE_PATH为代码所在的目录
+# 设置UUID、端口和路径，CF_IP是优选IP，SUB_NAME为节点名称
 export VMESS_WSPATH=${VMESS_WSPATH:-'startvm'}
 export VLESS_WSPATH=${VLESS_WSPATH:-'startvl'}
 export CF_IP=${CF_IP:-'www.who.int'}
@@ -10,7 +10,7 @@ export SUB_NAME="$SUB_NAME"
 # 设置订阅上传地址
 export SUB_URL="$SUB_URL"
 
-# 哪吒的四个参数
+# 哪吒的2个参数
 NEZHA_SERVER="$NEZHA_SERVER"
 NEZHA_KEY="$NEZHA_KEY"
 
@@ -230,35 +230,35 @@ argo_type
 args
 
 generate_pm2_file() {
-  # 伪装 X 执行文件
   RELEASE_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
-  cp data /tmp/{RELEASE_RANDOMNESS}
+  cp /app/data /tmp/${RELEASE_RANDOMNESS}
   cp /tmp/config.json /tmp/index.json
+
   cat > /tmp/ecosystem.config.js << ABC
 module.exports = {
   "apps":[
       {
           "name":"data",
-          "script":"/tmp/${RELEASE_RANDOMNESS} run -c ${FLIE_PATH}index.json"
+          "script":"/tmp/${RELEASE_RANDOMNESS} run -c /tmp/index.json"
 ABC
   [ -e argo ] && cat >> /tmp/ecosystem.config.js << DEF
       },
       {
           "name":"argo",
-          "script":"/app/argo $args"
+          "script":"/app/argo tunnel --edge-ip-version auto --protocol http2 run --token ${ARGO_AUTH}"
 DEF
-  [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> /tmp/ecosystem.config.js << GHI
+  [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> /tmp/ecosystem.config.js << HIJ
       },
       {
           "name":"agent",
           "script":"/app/agent",
           "args":"-s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls"
-GHI
-  cat >> /tmp/ecosystem.config.js << JKL
+HIJ
+  cat >> /tmp/ecosystem.config.js << KLM
       }
   ]
 }
-JKL
+KLM
 }
 
 generate_pm2_file
