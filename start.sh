@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # 设置UUID、端口和路径，CF_IP是优选IP，SUB_NAME为节点名称
-UUID=${UUID:-'de04add9-5c68-8bab-950c-08cd5320df18'}
+export UUID=${UUID:-'de04add9-5c68-8bab-950c-08cd5320df18'}
 export VMESS_WSPATH=${VMESS_WSPATH:-'startvm'}
 export VLESS_WSPATH=${VLESS_WSPATH:-'startvl'}
 export CF_IP=${CF_IP:-'www.who.int'}
