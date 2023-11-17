@@ -5,6 +5,7 @@ WORKDIR /app
 COPY index.js package.json start.sh upload.sh /app/
 
 ARG PORT=${PORT:-'3000'}
+ENV PORT=${PORT:-'3000'}
 EXPOSE $PORT
 
 ENV PM2_HOME=/tmp
