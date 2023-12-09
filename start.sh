@@ -267,14 +267,19 @@ generate_pm2_file
 
 sleep 30
 
+# 获取服务器的公共IP地址及国家简称
+function read_country() {
+server_ip=$(curl -s https://ipinfo.io/ip)
+country_abbreviation=$(curl -s https://ipinfo.io/${server_ip}/country)
+echo "$country_abbreviation" > /tmp/country.txt
+}
+read_country
+
 list() {
 if [ -z "$ARGO_AUTH" ] && [ -z "$ARGO_DOMAIN" ]; then
   [ -s /tmp/argo.log ] && export ARGO_DOMAIN=$(cat /tmp/argo.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
 fi
-# 获取服务器的公共IP地址
-server_ip=$(curl -s https://ipinfo.io/ip)
-# 获取IP地址对应的国家简称
-country_abbreviation=$(curl -s https://ipinfo.io/${server_ip}/country)
+country_abbreviation=$(cat /tmp/country.txt)
 VMESS="{ \"v\": \"2\", \"ps\": \"vmess-${country_abbreviation}-${SUB_NAME}\", \"add\": \"${CF_IP}\", \"port\": \"443\", \"id\": \"${UUID}\", \"aid\": \"0\", \"scy\": \"none\", \"net\": \"ws\", \"type\": \"none\", \"host\": \"${ARGO_DOMAIN}\", \"path\": \"/${VMESS_WSPATH}?ed=2048\", \"tls\": \"tls\", \"sni\": \"${ARGO_DOMAIN}\", \"alpn\": \"\" }"
   cat > /tmp/list.txt <<ABC
 ***************************************************
@@ -303,9 +308,7 @@ rm /tmp/encode.txt
 
 if [ -z "$SUB_URL" ]; then
 list
-
 else
-
 list
 bash /app/upload.sh >/dev/null 2>&1 &
 fi
