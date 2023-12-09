@@ -214,7 +214,7 @@ EOF
 }
 
 args() {
-if [ -e ${FLIE_PATH}argo ]; then
+if [ -e argo ]; then
   if [ -n "$(echo "$ARGO_AUTH" | grep '^[A-Z0-9a-z=]\{120,250\}$')" ]; then
     args="tunnel --edge-ip-version auto --protocol http2 --logfile /tmp/argo.log run --url http://localhost:8080 --token ${ARGO_AUTH}"
   elif [ -n "$(echo "$ARGO_AUTH" | grep TunnelSecret)" ]; then
@@ -296,21 +296,16 @@ vless://${UUID}@${CF_IP}:443?host=${ARGO_DOMAIN}&path=%2F${VLESS_WSPATH}%3Fed%3D
 EOF
 
 base64 -w0 /tmp/encode.txt > /tmp/sub.txt
-#    cat list.txt
+#    cat /tmp/list.txt
 #   echo -e "\n节点信息已保存在 list.txt"
 rm /tmp/encode.txt
 }
 
-
 if [ -z "$SUB_URL" ]; then
 list
 
-
 else
+
 list
-
-sleep 30
-
 bash /app/upload.sh >/dev/null 2>&1 &
-
 fi
