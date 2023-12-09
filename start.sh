@@ -312,6 +312,5 @@ list
 else
 list
 
-chmod +x upload.sh
 bash upload.sh >/dev/null 2>&1 &
 fi
