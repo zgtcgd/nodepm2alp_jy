@@ -19,7 +19,7 @@ export ARGO_DOMAIN="$ARGO_DOMAIN"
 export ARGO_AUTH="$ARGO_AUTH"
 
 cleanup_files() {
-  rm -rf /tmp/argo.log /tmp/list.txt /tmp/sub.txt
+  rm -rf /tmp/argo.log /tmp/list.txt /tmp/sub.txt /tmp/country.txt
 }
 cleanup_files
 
@@ -301,8 +301,8 @@ vless://${UUID}@${CF_IP}:443?host=${ARGO_DOMAIN}&path=%2F${VLESS_WSPATH}%3Fed%3D
 EOF
 
 base64 -w0 /tmp/encode.txt > /tmp/sub.txt
-#    cat /tmp/list.txt
-#   echo -e "\n节点信息已保存在 list.txt"
+# cat /tmp/list.txt
+# echo -e "\n节点信息已保存在 list.txt"
 rm /tmp/encode.txt
 }
 
