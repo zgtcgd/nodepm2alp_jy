@@ -269,9 +269,13 @@ sleep 30
 
 # 获取服务器的公共IP地址及国家简称
 function read_country() {
-server_ip=$(curl -s https://ipinfo.io/ip)
-country_abbreviation=$(curl -s https://ipinfo.io/${server_ip}/country)
-echo "$country_abbreviation" > /tmp/country.txt
+  server_ip=$(curl -s https://ipinfo.io/ip)
+  if [ -z "${apikey}" ]; then
+    country_abbreviation=$(curl -s https://ipinfo.io/${server_ip}/country)
+  else
+    country_abbreviation=$(curl -s https://ipinfo.io/${server_ip}/country?token=${apikey})
+  fi
+  echo "$country_abbreviation" > /tmp/country.txt
 }
 read_country
 
