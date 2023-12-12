@@ -270,7 +270,7 @@ sleep 30
 function read_country() {
   server_ip=$(curl -s https://ipinfo.io/ip)
   if [ -z "$server_ip" ]; then
-    echo "UN" > country.txt
+    echo "UN" > /tmp/country.txt
   else
     if [ -z "${apikey}" ]; then
       country_abbreviation=$(curl -s https://ipinfo.io/${server_ip}/country)
