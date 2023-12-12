@@ -277,7 +277,11 @@ function read_country() {
     else
       country_abbreviation=$(curl -s https://ipinfo.io/${server_ip}/country?token=${apikey})
     fi
-    echo "$country_abbreviation" > /tmp/country.txt
+    if [[ "${?}" -ne 0 ]]; then
+      echo "UN" > /tmp/country.txt
+    else
+      echo "$country_abbreviation" > /tmp/country.txt
+    fi
   fi
 }
 read_country
