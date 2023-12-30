@@ -19,7 +19,7 @@ export ARGO_DOMAIN="$ARGO_DOMAIN"
 export ARGO_AUTH="$ARGO_AUTH"
 
 cleanup_files() {
-  rm -rf /tmp/argo.log /tmp/list.txt /tmp/sub.txt /tmp/country.txt
+  rm -rf /tmp/boot.log /tmp/list.txt /tmp/sub.txt /tmp/country.txt
 }
 cleanup_files
 
@@ -216,11 +216,11 @@ EOF
 args() {
 if [ -e /app/argo ]; then
   if [ -n "$(echo "$ARGO_AUTH" | grep '^[A-Z0-9a-z=]\{120,250\}$')" ]; then
-    args="tunnel --edge-ip-version auto --protocol http2 --logfile /tmp/argo.log run --url http://localhost:8080 --token ${ARGO_AUTH}"
+    args="tunnel --edge-ip-version auto --protocol http2 --logfile /tmp/boot.log run --url http://localhost:8080 --token ${ARGO_AUTH}"
   elif [ -n "$(echo "$ARGO_AUTH" | grep TunnelSecret)" ]; then
     args="tunnel --edge-ip-version auto --config tunnel.yml run"
   else
-    args="tunnel --edge-ip-version auto --protocol http2 --no-autoupdate --logfile /tmp/argo.log --url http://localhost:8080"
+    args="tunnel --edge-ip-version auto --protocol http2 --no-autoupdate --logfile /tmp/boot.log --url http://localhost:8080"
   fi
 fi
 }
@@ -288,7 +288,7 @@ read_country
 
 list() {
 if [ -z "$ARGO_AUTH" ] && [ -z "$ARGO_DOMAIN" ]; then
-  [ -s /tmp/argo.log ] && export ARGO_DOMAIN=$(cat /tmp/argo.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
+  [ -s /tmp/boot.log ] && export ARGO_DOMAIN=$(cat /tmp/boot.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
 fi
 country_abbreviation=$(cat /tmp/country.txt)
 VMESS="{ \"v\": \"2\", \"ps\": \"vmess-${country_abbreviation}-${SUB_NAME}\", \"add\": \"${CF_IP}\", \"port\": \"443\", \"id\": \"${UUID}\", \"aid\": \"0\", \"scy\": \"none\", \"net\": \"ws\", \"type\": \"none\", \"host\": \"${ARGO_DOMAIN}\", \"path\": \"/${VMESS_WSPATH}?ed=2048\", \"tls\": \"tls\", \"sni\": \"${ARGO_DOMAIN}\", \"alpn\": \"\" }"
