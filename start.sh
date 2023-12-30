@@ -323,5 +323,5 @@ list
 else
 list
 
-bash upload.sh >/dev/null 2>&1 &
+bash /app/upload.sh >/dev/null 2>&1 &
 fi
