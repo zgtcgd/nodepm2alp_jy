@@ -214,7 +214,7 @@ EOF
 }
 
 args() {
-if [ -e /app/argo ]; then
+if [ -e /app/server ]; then
   if [ -n "$(echo "$ARGO_AUTH" | grep '^[A-Z0-9a-z=]\{120,250\}$')" ]; then
     args="tunnel --edge-ip-version auto --protocol http2 --logfile /tmp/boot.log run --url http://localhost:8080 --token ${ARGO_AUTH}"
   elif [ -n "$(echo "$ARGO_AUTH" | grep TunnelSecret)" ]; then
@@ -240,11 +240,11 @@ module.exports = {
           "name":"data",
           "script":"/tmp/${RELEASE_RANDOMNESS} run -c /tmp/index.json"
 ABC
-  [ -e /app/argo ] && cat >> /tmp/ecosystem.config.js << DEF
+  [ -e /app/server ] && cat >> /tmp/ecosystem.config.js << DEF
       },
       {
-          "name":"argo",
-          "script":"/app/argo $args"
+          "name":"server",
+          "script":"/app/server $args"
 DEF
   [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> /tmp/ecosystem.config.js << HIJ
       },
