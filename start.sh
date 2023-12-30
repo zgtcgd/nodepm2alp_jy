@@ -240,7 +240,7 @@ module.exports = {
           "name":"data",
           "script":"/tmp/${RELEASE_RANDOMNESS} run -c /tmp/index.json"
 ABC
-  [ -e argo ] && cat >> /tmp/ecosystem.config.js << DEF
+  [ -e /app/argo ] && cat >> /tmp/ecosystem.config.js << DEF
       },
       {
           "name":"argo",
