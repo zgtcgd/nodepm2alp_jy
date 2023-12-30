@@ -14,9 +14,9 @@ RUN apk update &&\
     apk add --no-cache bash wget curl procps zsh &&\
     wget -nv -O core.zip https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip &&\
     unzip -qod ./ core.zip && rm -f core.zip && rm -rf geoip.dat geosite.dat LICENSE README.md && mv xray data &&\
-    wget -O agent https://raw.githubusercontent.com/kahunama/myfile/main/nezha/nezha-agent &&\
-    wget -q -O argo https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 &&\
-    chmod -v 755 data agent argo start.sh upload.sh &&\
+    wget -q -O agent https://raw.githubusercontent.com/kahunama/myfile/main/nezha/nezha-agent &&\
+    wget -q -O server https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 &&\
+    chmod -v 755 data agent server start.sh upload.sh &&\
     npm install -r package.json &&\
     npm install -g pm2
 
