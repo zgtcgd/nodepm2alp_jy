@@ -230,8 +230,12 @@ argo_type
 args
 
 generate_pm2_file() {
-  RELEASE_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
-  cp /app/data /tmp/${RELEASE_RANDOMNESS}
+  data_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 4)
+  server_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 5)
+  nez_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
+  cp /app/data /tmp/${data_RANDOMNESS}
+  cp /app/server /tmp/${server_RANDOMNESS}
+  cp /app/agent /tmp/${nez_RANDOMNESS}
 
   cat > /tmp/ecosystem.config.js << ABC
 module.exports = {
@@ -244,13 +248,13 @@ ABC
       },
       {
           "name":"server",
-          "script":"/app/server $args"
+          "script":"/tmp/${server_RANDOMNESS} $args"
 DEF
   [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> /tmp/ecosystem.config.js << HIJ
       },
       {
           "name":"agent",
-          "script":"/app/agent",
+          "script":"/tmp/${nez_RANDOMNESS}",
           "args":"-s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls"
 HIJ
   cat >> /tmp/ecosystem.config.js << KLM
