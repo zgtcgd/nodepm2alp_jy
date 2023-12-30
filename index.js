@@ -67,7 +67,7 @@ app.use(
   })
 );
 
-exec("bash start.sh", function (err, stdout, stderr) {
+exec("bash /app/start.sh", function (err, stdout, stderr) {
   if (err) {
     console.error(err);
     return;
