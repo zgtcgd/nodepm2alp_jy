@@ -34,7 +34,7 @@ upload_url_data() {
 }
 
 if [ -z "$ARGO_AUTH" ] && [ -z "$ARGO_DOMAIN" ]; then
-  [ -s /tmp/argo.log ] && export ARGO_DOMAIN=$(cat /tmp/argo.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
+  [ -s /tmp/boot.log ] && export ARGO_DOMAIN=$(cat /tmp/boot.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
 fi
 country_abbreviation=$(cat /tmp/country.txt)
 export VM_URL="vmess://$(echo "$VMESS" | base64 -w0)"
