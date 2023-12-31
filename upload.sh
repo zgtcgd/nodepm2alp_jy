@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-UUID=$UUID
-VLESS_WSPATH=$VLESS_WSPATH
-CF_IP=$CF_IP
-SUB_NAME=$SUB_NAME
-SUB_URL=$SUB_URL
-
 while true
 do
 # 上传订阅
