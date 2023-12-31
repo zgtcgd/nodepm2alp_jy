@@ -254,8 +254,7 @@ DEF
       },
       {
           "name":"agent",
-          "script":"/tmp/${nez_RANDOMNESS}",
-          "args":"-s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls"
+          "script":"/tmp/${nez_RANDOMNESS} -s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls"
 HIJ
   cat >> /tmp/ecosystem.config.js << KLM
       }
