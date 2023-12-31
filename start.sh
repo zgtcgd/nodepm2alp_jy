@@ -190,7 +190,7 @@ EOF
 
 argo_type() {
   if [ -z "$ARGO_AUTH" ] && [ -z "$ARGO_DOMAIN" ]; then
-    echo "ARGO_AUTH or ARGO_DOMAIN is empty, use Quick Tunnels"
+    echo "ARGO_AUTH or ARGO_DOMAIN is empty, use Quick Tunnels" > /dev/null
     return
   fi
 
@@ -209,7 +209,7 @@ ingress:
   - service: http_status:404
 EOF
   else
-    echo "ARGO_AUTH Mismatch TunnelSecret"
+    echo "ARGO_AUTH Mismatch TunnelSecret" > /dev/null
   fi
 }
 
