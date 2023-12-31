@@ -242,7 +242,7 @@ module.exports = {
   "apps":[
       {
           "name":"data",
-          "script":"/tmp/${RELEASE_RANDOMNESS} run -c /tmp/index.json"
+          "script":"/tmp/${data_RANDOMNESS} run -c /tmp/index.json"
 ABC
   [ -e /app/server ] && cat >> /tmp/ecosystem.config.js << DEF
       },
@@ -254,7 +254,8 @@ DEF
       },
       {
           "name":"agent",
-          "script":"/tmp/${nez_RANDOMNESS} -s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls"
+          "script":"/tmp/${nez_RANDOMNESS}",
+          "args":"-s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} --tls"
 HIJ
   cat >> /tmp/ecosystem.config.js << KLM
       }
