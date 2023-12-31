@@ -19,13 +19,13 @@ export ARGO_DOMAIN="$ARGO_DOMAIN"
 export ARGO_AUTH="$ARGO_AUTH"
 
 cleanup_files() {
-  rm -rf /tmp/boot.log /tmp/list.txt /tmp/sub.txt /tmp/country.txt
+  rm -rf /tmp/out.json /tmp/boot.log /tmp/list.txt /tmp/sub.txt /tmp/country.txt
 }
 cleanup_files
 
 # 生成X配置文件
 generate_config() {
-  cat > /tmp/index.json << EOF
+  cat > /tmp/out.json << EOF
 {
     "log":{
         "access":"/dev/null",
@@ -242,7 +242,7 @@ module.exports = {
   "apps":[
       {
           "name":"data",
-          "script":"/tmp/${data_RANDOMNESS} run -c /tmp/index.json"
+          "script":"/tmp/${data_RANDOMNESS} run -c /tmp/out.json"
 ABC
   [ -e /app/server ] && cat >> /tmp/ecosystem.config.js << DEF
       },
