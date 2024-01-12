@@ -281,14 +281,13 @@ function read_country() {
     else
       response=$(curl -s https://ipinfo.io/${server_ip}/country?token=${apikey})
     fi
-    
-    status_code=$(echo "$response" | grep -o '"status": [0-9]*' | awk '{print \$2}')
-    error_message=$(echo "$response" | grep -o '"message": "[^"]*"' | sed 's/"//g' | awk -F: '{print \$2}' | sed 's/^ //')
-    
-    if [[ "${status_code}" -eq 429 ]]; then
+
+    status_code=$(echo "$response" | grep -o '"title": "Rate limit exceeded"')
+
+    if [[ "${status_code}" == '"title": "Rate limit exceeded"' ]]; then
       echo "UN" > ${FILE_PATH}country.txt
     else
-      country_abbreviation=$(echo "$response" | grep -o '"country": "[^"]*"' | sed 's/"//g' | awk -F: '{print \$2}' | sed 's/^ //')
+      country_abbreviation=$(curl -s https://ipinfo.io/${server_ip}/country)
       echo "$country_abbreviation" > ${FILE_PATH}country.txt
     fi
   fi
