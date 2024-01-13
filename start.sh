@@ -273,25 +273,28 @@ sleep 30
 # 获取服务器的公共IP地址及国家简称
 function read_country() {
   server_ip=$(curl -s https://ipinfo.io/ip)
+
   if [ -z "$server_ip" ]; then
-    echo "UN" > ${FILE_PATH}country.txt
+    echo "UN" > /tmp/country.txt
+    return
+  fi
+
+  if [ -z "${apikey}" ]; then
+    response=$(curl -s "https://ipinfo.io/${server_ip}/country")
   else
-    if [ -z "${apikey}" ]; then
-      response=$(curl -s https://ipinfo.io/${server_ip}/country)
-    else
-      response=$(curl -s https://ipinfo.io/${server_ip}/country?token=${apikey})
-    fi
+    response=$(curl -s "https://ipinfo.io/${server_ip}/country?token=${apikey}")
+  fi
 
-    status_code=$(echo "$response" | grep -o '"title": "Rate limit exceeded"')
+  status_code=$(echo "$response" | grep -o '"title": "Rate limit exceeded"')
 
-    if [[ "${status_code}" == '"title": "Rate limit exceeded"' ]]; then
-      echo "UN" > ${FILE_PATH}country.txt
-    else
-      country_abbreviation=$(curl -s https://ipinfo.io/${server_ip}/country)
-      echo "$country_abbreviation" > ${FILE_PATH}country.txt
-    fi
+  if [ -n "${status_code}" ]; then
+    echo "UN" > /tmp/country.txt
+  else
+    country_abbreviation=$(echo "$response")
+    echo "$country_abbreviation" > /tmp/country.txt
   fi
 }
+
 read_country
 
 list() {
