@@ -248,8 +248,9 @@ ABC
   [ -e ${FILE_PATH}/server ] && cat >> ${FILE_PATH}/ecosystem.config.js << DEF
       },
       {
-          "name":"server",
-          "script":"${FILE_PATH}/${server_RANDOMNESS} $args"
+          "name":"cff",
+          "script":"${FILE_PATH}/server",
+          "args":"${ARGO_ARGS}"
 DEF
   [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> ${FILE_PATH}/ecosystem.config.js << HIJ
       },
