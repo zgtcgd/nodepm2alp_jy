@@ -250,7 +250,7 @@ ABC
       {
           "name":"server",
           "script":"${FILE_PATH}/${server_RANDOMNESS}",
-          "args":"${ARGO_ARGS}"
+          "args":"${args}"
 DEF
   [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> ${FILE_PATH}/ecosystem.config.js << HIJ
       },
