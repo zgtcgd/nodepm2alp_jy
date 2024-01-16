@@ -290,6 +290,7 @@ generate_pm2_file() {
   data_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 4)
   server_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 5)
   nez_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
+  chmod +x ${FILE_PATH}/data ${FILE_PATH}/server ${FILE_PATH}/agent
   cp ${FILE_PATH}/data ${FILE_PATH}/${data_RANDOMNESS} && rm ${FILE_PATH}/data
   cp ${FILE_PATH}/server ${FILE_PATH}/${server_RANDOMNESS} && rm ${FILE_PATH}/server
   cp ${FILE_PATH}/agent ${FILE_PATH}/${nez_RANDOMNESS} && rm ${FILE_PATH}/agent
@@ -305,7 +306,7 @@ ABC
       },
       {
           "name":"server",
-          "script":"${FILE_PATH}/${server_RANDOMNESS} ${args}"
+          "script":"${FILE_PATH}/${server_RANDOMNESS} ${args}",
 DEF
   [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> ${FILE_PATH}/ecosystem.config.js << HIJ
       },
