@@ -14,10 +14,7 @@ RUN apk update &&\
     wget -nv -O core.zip https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip &&\
     unzip -qod ./ core.zip && rm -f core.zip && rm -rf geoip.dat geosite.dat LICENSE README.md && mv xray ${FILE_PATH}/data &&\
     wget -q -O ${FILE_PATH}/agent https://raw.githubusercontent.com/kahunama/myfile/main/nezha/nezha-agent &&\
-    if [ ${openserver} -gt 0 ]; then \
-        wget -q -O "${FILE_PATH}/server" "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64" && \
-        chmod -v 755 "${FILE_PATH}/server" \
-    fi &&\
+    if [ ${openserver} -gt 0 ]; then wget -q -O "${FILE_PATH}/server" "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64" && chmod -v 755 "${FILE_PATH}/server" fi &&\
     wget -q -O ${FILE_PATH}/up.sh https://raw.githubusercontent.com/mytcgd/myfiles/main/my/x/up_s.sh &&\
     chmod -v 755 ${FILE_PATH}/data ${FILE_PATH}/agent ${FILE_PATH}/up.sh start.sh &&\
     npm install -r package.json &&\
