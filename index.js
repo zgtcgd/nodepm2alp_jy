@@ -1,10 +1,17 @@
 const port = process.env.PORT || 3000;
-const FILE_PATH = process.env.FILE_PATH || '/tmp/';
+const FILE_PATH = process.env.FILE_PATH || '/tmp';
 const express = require("express");
 const app = express();
 const { createProxyMiddleware } = require("http-proxy-middleware");
 var fs = require("fs");
-var exec = require("child_process").exec;
+const { spawn } = require('child_process');
+
+// 启动主程序
+const startScriptPath = `/app/start.sh`;
+const childProcess = spawn(startScriptPath, [], {
+  detached: false,
+  stdio: 'inherit',
+});
 
 app.get("/", function (req, res) {
   res.status(200).send("hello world");
@@ -16,7 +23,7 @@ app.get("/healthcheck", function (req, res) {
 
 //获取节点数据
 app.get("/list", function (req, res) {
-  let filePath = FILE_PATH + "list.txt";
+  let filePath = FILE_PATH + "/list.txt";
   fs.readFile(filePath, (err, data) => {
     if (err) {
       res.type("html").send("<pre>文件读取错误：\n" + err + "</pre>");
@@ -29,7 +36,7 @@ app.get("/list", function (req, res) {
 
 //获取订阅数据
 app.get("/sub", (req, res) => {
-  let subfilePath = FILE_PATH + "sub.txt";
+  let subfilePath = FILE_PATH + "/sub.txt";
   fs.readFile(subfilePath, (err, data) => {
     if (err) {
       res.status(500).send('Error reading file');
@@ -66,13 +73,5 @@ app.use(
     ws: true // 是否代理websockets
   })
 );
-
-exec("bash /app/start.sh", function (err, stdout, stderr) {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  console.log(stdout);
-});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
