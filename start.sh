@@ -63,14 +63,17 @@ download_program() {
 
 if [ -n "${NEZHA_SERVER}" ] && [ -n "${NEZHA_KEY}" ]; then
   download_program "${FILE_PATH}/agent" "https://raw.githubusercontent.com/kahunama/myfile/main/nezha/nezha-agent(arm)" "https://raw.githubusercontent.com/kahunama/myfile/main/nezha/nezha-agent"
+  chmod +x ${FILE_PATH}/agent
   sleep 3
 fi
 
 download_program "${FILE_PATH}/data" "https://raw.githubusercontent.com/mytcgd/myfiles/main/my/xray(arm64)" "https://raw.githubusercontent.com/mytcgd/myfiles/main/my/xray"
+chmod +x ${FILE_PATH}/data
 sleep 3
 
 if [ ${openserver} -gt 0 ]; then
   download_program "${FILE_PATH}/server" "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64" "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64"
+  chmod +x ${FILE_PATH}/server
   sleep 3
 fi
 
@@ -290,10 +293,13 @@ generate_pm2_file() {
   data_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 4)
   server_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 5)
   nez_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
-  chmod +x ${FILE_PATH}/data ${FILE_PATH}/server ${FILE_PATH}/agent
   cp ${FILE_PATH}/data ${FILE_PATH}/${data_RANDOMNESS} && rm ${FILE_PATH}/data
-  cp ${FILE_PATH}/server ${FILE_PATH}/${server_RANDOMNESS} && rm ${FILE_PATH}/server
-  cp ${FILE_PATH}/agent ${FILE_PATH}/${nez_RANDOMNESS} && rm ${FILE_PATH}/agent
+  if [ ${openserver} -gt 0 ]; then
+    cp ${FILE_PATH}/server ${FILE_PATH}/${server_RANDOMNESS} && rm ${FILE_PATH}/server
+  fi
+  if [ -n "${NEZHA_SERVER}" ] && [ -n "${NEZHA_KEY}" ]; then
+    cp ${FILE_PATH}/agent ${FILE_PATH}/${nez_RANDOMNESS} && rm ${FILE_PATH}/agent
+  fi
 
   cat > ${FILE_PATH}/ecosystem.config.js << ABC
 module.exports = {
