@@ -72,7 +72,7 @@ chmod +x ${FILE_PATH}/data
 sleep 3
 
 if [ ${openserver} -gt 0 ]; then
-  download_program "${FILE_PATH}/server" "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64" "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64"
+  download_program "${FILE_PATH}/server" "https://raw.githubusercontent.com/kahunama/myfile/main/cff/cloudflared-linux-arm64" "https://raw.githubusercontent.com/kahunama/myfile/main/cff/cloudflared-linux-amd64"
   chmod +x ${FILE_PATH}/server
   sleep 3
 fi
