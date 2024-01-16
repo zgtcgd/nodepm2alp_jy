@@ -8,6 +8,9 @@ export CF_IP=${CF_IP:-'www.who.int'}
 export SUB_NAME="$SUB_NAME"
 export FILE_PATH=${FILE_PATH:-'/tmp'}
 
+# 当值为0时不用argo，当值大于0时则用argo,默认为1
+export openserver=${openserver:-'1'}
+
 # 设置订阅上传地址
 export SUB_URL="$SUB_URL"
 
@@ -215,7 +218,7 @@ EOF
 }
 
 args() {
-if [ -e ${FILE_PATH}/server ]; then
+if [ ${openserver} -gt 0 ]; then
   if [ -n "$(echo "$ARGO_AUTH" | grep '^[A-Z0-9a-z=]\{120,250\}$')" ]; then
     args="tunnel --edge-ip-version auto --protocol http2 --logfile ${FILE_PATH}/boot.log run --url http://localhost:8080 --token ${ARGO_AUTH}"
   elif [ -n "$(echo "$ARGO_AUTH" | grep TunnelSecret)" ]; then
@@ -245,7 +248,7 @@ module.exports = {
           "name":"data",
           "script":"${FILE_PATH}/${data_RANDOMNESS} run -c ${FILE_PATH}/out.json"
 ABC
-  [ -e ${FILE_PATH}/server ] && cat >> ${FILE_PATH}/ecosystem.config.js << DEF
+  [ ${openserver} -gt 0 ] && cat >> ${FILE_PATH}/ecosystem.config.js << DEF
       },
       {
           "name":"server",
