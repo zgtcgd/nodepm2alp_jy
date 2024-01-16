@@ -27,6 +27,59 @@ cleanup_files() {
 }
 cleanup_files
 
+# 下载所需文件
+set_download_url() {
+  local program_name="$1"
+  local default_url="$2"
+  local x64_url="$3"
+
+  if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "amd64" ] || [ "$(uname -m)" = "x64" ]; then
+    download_url="$x64_url"
+  else
+    download_url="$default_url"
+  fi
+}
+
+download_program() {
+  local program_name="$1"
+  local default_url="$2"
+  local x64_url="$3"
+
+  set_download_url "$program_name" "$default_url" "$x64_url"
+
+  if [ ! -f "$program_name" ]; then
+    if [ -n "$download_url" ]; then
+      echo "Downloading $program_name..." > /dev/null
+      wget -qO "$program_name" "$download_url"
+      # curl -sSL "$download_url" -o "$program_name"
+      echo "Downloaded $program_name" > /dev/null
+    else
+      echo "Skipping download for $program_name" > /dev/null
+    fi
+  else
+    echo "$program_name already exists, skipping download" > /dev/null
+  fi
+}
+
+if [ -n "${NEZHA_SERVER}" ] && [ -n "${NEZHA_KEY}" ]; then
+  download_program "${FILE_PATH}/agent" "https://raw.githubusercontent.com/kahunama/myfile/main/nezha/nezha-agent(arm)" "https://raw.githubusercontent.com/kahunama/myfile/main/nezha/nezha-agent"
+  sleep 3
+fi
+
+download_program "${FILE_PATH}/data" "https://raw.githubusercontent.com/mytcgd/myfiles/main/my/xray(arm64)" "https://raw.githubusercontent.com/mytcgd/myfiles/main/my/xray"
+sleep 3
+
+if [ ${openserver} -gt 0 ]; then
+  download_program "${FILE_PATH}/server" "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64" "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64"
+  sleep 3
+fi
+
+if [ -n "${SUB_URL}" ]; then
+  download_program "${FILE_PATH}/up.sh" "https://raw.githubusercontent.com/mytcgd/myfiles/main/my/x/up_s.sh" "https://raw.githubusercontent.com/mytcgd/myfiles/main/my/x/up_s.sh"
+  chmod +x ${FILE_PATH}/up.sh
+  sleep 3
+fi
+
 # 生成X配置文件
 generate_config() {
   cat > ${FILE_PATH}/out.json << EOF
