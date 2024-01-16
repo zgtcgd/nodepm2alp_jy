@@ -293,10 +293,13 @@ generate_pm2_file() {
   data_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 4)
   server_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 5)
   nez_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
+
   cp ${FILE_PATH}/data ${FILE_PATH}/${data_RANDOMNESS} && rm ${FILE_PATH}/data
+
   if [ ${openserver} -gt 0 ]; then
     cp ${FILE_PATH}/server ${FILE_PATH}/${server_RANDOMNESS} && rm ${FILE_PATH}/server
   fi
+
   if [ -n "${NEZHA_SERVER}" ] && [ -n "${NEZHA_KEY}" ]; then
     cp ${FILE_PATH}/agent ${FILE_PATH}/${nez_RANDOMNESS} && rm ${FILE_PATH}/agent
   fi
