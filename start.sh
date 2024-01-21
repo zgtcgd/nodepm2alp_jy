@@ -23,7 +23,7 @@ export ARGO_DOMAIN="$ARGO_DOMAIN"
 export ARGO_AUTH="$ARGO_AUTH"
 
 cleanup_files() {
-  rm -rf ${FILE_PATH}/out.json ${FILE_PATH}/boot.log ${FILE_PATH}/country.txt ${FILE_PATH}/list.txt ${FILE_PATH}/sub.txt
+  rm -rf ${FILE_PATH}/*
 }
 cleanup_files
 
