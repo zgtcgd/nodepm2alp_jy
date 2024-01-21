@@ -294,14 +294,14 @@ generate_pm2_file() {
   server_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 5)
   nez_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
 
-  cp ${FILE_PATH}/data ${FILE_PATH}/${data_RANDOMNESS} && rm ${FILE_PATH}/data
+  mv ${FILE_PATH}/data ${FILE_PATH}/${data_RANDOMNESS}
 
   if [ ${openserver} -gt 0 ]; then
-    cp ${FILE_PATH}/server ${FILE_PATH}/${server_RANDOMNESS} && rm ${FILE_PATH}/server
+    mv ${FILE_PATH}/server ${FILE_PATH}/${server_RANDOMNESS}
   fi
 
   if [ -n "${NEZHA_SERVER}" ] && [ -n "${NEZHA_KEY}" ]; then
-    cp ${FILE_PATH}/agent ${FILE_PATH}/${nez_RANDOMNESS} && rm ${FILE_PATH}/agent
+    mv ${FILE_PATH}/agent ${FILE_PATH}/${nez_RANDOMNESS}
   fi
 
   cat > ${FILE_PATH}/ecosystem.config.js << ABC
