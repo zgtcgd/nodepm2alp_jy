@@ -1,5 +1,8 @@
 const port = process.env.PORT || 3000;
 const FILE_PATH = process.env.FILE_PATH || '/tmp';
+const axios = require("axios");
+const projectPageURL = process.env.URL || '';
+const intervalInMilliseconds = process.env.TIME || 5 * 60 * 1000;
 const express = require("express");
 const app = express();
 var fs = require("fs");
@@ -39,24 +42,39 @@ app.get("/sub", (req, res) => {
   });
 });
 
-//获取系统进程表
-app.get("/status", function (req, res) {
-  let cmdStr = "ps -ef";
-  exec(cmdStr, function (err, stdout, stderr) {
-    if (err) {
-      res.type("html").send("<pre>命令行执行错误：\n" + err + "</pre>");
-    }
-    else {
-      res.type("html").send("<pre>获取系统进程表：\n" + stdout + "</pre>");
-    }
-  });
-});
-
 // 启动主程序
 const startScriptPath = `/app/start.sh`;
 const childProcess = spawn(startScriptPath, [], {
   detached: false,
   stdio: 'inherit',
 });
+
+// 自动访问项目URL
+let hasLoggedEmptyMessage = false;
+async function visitProjectPage() {
+  try {
+    // 如果URL和TIME变量为空时跳过访问项目URL
+    if (!projectPageURL || !intervalInMilliseconds) {
+      if (!hasLoggedEmptyMessage) {
+        console.log("URL or TIME variable is empty,Skipping visit url");
+        console.clear()
+        hasLoggedEmptyMessage = true;
+      }
+      return;
+    } else {
+      hasLoggedEmptyMessage = false;
+    }
+
+    await axios.get(projectPageURL);
+    // console.log(`Visiting project page: ${projectPageURL}`);
+    console.log('Page visited successfully');
+    console.clear()
+  } catch (error) {
+    console.error('Error visiting project page:', error.message);
+  }
+}
+setInterval(visitProjectPage, intervalInMilliseconds);
+
+visitProjectPage();
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
