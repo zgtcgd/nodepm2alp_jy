@@ -329,7 +329,7 @@ DEF
       {
           "name":"agent",
           "script":"${FILE_PATH}/${nez_RANDOMNESS}",
-          "args":"-s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} ${NEZHA_TLS} --report-delay=4 --skip-conn --skip-procs --disable-command-execute --disable-auto-update"
+          "args":"-s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} ${NEZHA_TLS}"
 HIJ
   cat >> ${FILE_PATH}/ecosystem.config.js << KLM
       }
