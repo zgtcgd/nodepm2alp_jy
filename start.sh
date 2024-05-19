@@ -4,7 +4,7 @@
 export UUID=${UUID:-'de04add9-5c68-8bab-950c-08cd5320df18'}
 export VMESS_WSPATH=${VMESS_WSPATH:-'startvm'}
 export VLESS_WSPATH=${VLESS_WSPATH:-'startvl'}
-export CF_IP=${CF_IP:-'icook.hk'}
+export CF_IP=${CF_IP:-'icook.tw'}
 export SUB_NAME="$SUB_NAME"
 export FILE_PATH=${FILE_PATH:-'/tmp'}
 
