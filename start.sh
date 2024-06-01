@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# 设置UUID、端口和路径，CF_IP是优选IP，SUB_NAME为节点名称
+# variable
 export UUID=${UUID:-'de04add9-5c68-8bab-950c-08cd5320df18'}
 export VMESS_WSPATH=${VMESS_WSPATH:-'startvm'}
 export VLESS_WSPATH=${VLESS_WSPATH:-'startvl'}
@@ -8,27 +8,27 @@ export CF_IP=${CF_IP:-'icook.tw'}
 export SUB_NAME="$SUB_NAME"
 export FILE_PATH=${FILE_PATH:-'/tmp'}
 
-# 当值为0时不用argo，当值大于0时则用argo,默认为1
 export openserver=${openserver:-'1'}
 
-# 设置订阅上传地址
 export SUB_URL="$SUB_URL"
 
-# 哪吒的2个参数
 NEZHA_SERVER="$NEZHA_SERVER"
 NEZHA_KEY="$NEZHA_KEY"
-NEZHA_PORT="443"
+NEZHA_PORT=${NEZHA_PORT:-'443'}
 
-# argo参数
 export ARGO_DOMAIN="$ARGO_DOMAIN"
 export ARGO_AUTH="$ARGO_AUTH"
+
+if [ ! -d "$FILE_PATH" ]; then
+  mkdir -p "$FILE_PATH"
+fi
 
 cleanup_files() {
   rm -rf ${FILE_PATH}/*
 }
 cleanup_files
 
-# 下载所需文件
+# Download required files
 set_download_url() {
   local program_name="$1"
   local default_url="$2"
@@ -68,11 +68,11 @@ if [ -n "${NEZHA_SERVER}" ] && [ -n "${NEZHA_KEY}" ]; then
   sleep 3
 fi
 
-download_program "${FILE_PATH}/data" "https://raw.githubusercontent.com/mytcgd/myfiles/main/my/xray(arm64)" "https://raw.githubusercontent.com/mytcgd/myfiles/main/my/xray"
+download_program "${FILE_PATH}/data" "https://github.com/mytcgd/myfiles/releases/download/main/xray_arm" "https://github.com/mytcgd/myfiles/releases/download/main/xray"
 chmod +x ${FILE_PATH}/data
 sleep 3
 
-if [ ${openserver} -gt 0 ]; then
+if [ ${openserver} -eq 1 ]; then
   download_program "${FILE_PATH}/server" "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64" "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64"
   chmod +x ${FILE_PATH}/server
   sleep 3
@@ -84,7 +84,7 @@ if [ -n "${SUB_URL}" ]; then
   sleep 3
 fi
 
-# 生成X配置文件
+# Generate configuration file
 generate_config() {
   cat > ${FILE_PATH}/out.json << EOF
 {
@@ -275,7 +275,7 @@ EOF
 }
 
 args() {
-if [ ${openserver} -gt 0 ]; then
+if [ -e ${FILE_PATH}/server ] && [ ${openserver} -eq 1 ]; then
   if [ -n "$(echo "$ARGO_AUTH" | grep '^[A-Z0-9a-z=]\{120,250\}$')" ]; then
     args="tunnel --edge-ip-version auto --protocol http2 --logfile ${FILE_PATH}/boot.log run --url http://localhost:8080 --token ${ARGO_AUTH}"
   elif [ -n "$(echo "$ARGO_AUTH" | grep TunnelSecret)" ]; then
@@ -290,24 +290,25 @@ generate_config
 argo_type
 args
 
+# run
 generate_pm2_file() {
-  data_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 4)
-  server_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 5)
-  nez_RANDOMNESS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
+  server_randomness=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 4)
+  data_randomness=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 5)
+  nez_randomness=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 6)
 
-  mv ${FILE_PATH}/data ${FILE_PATH}/${data_RANDOMNESS}
-
-  if [ ${openserver} -gt 0 ]; then
-    mv ${FILE_PATH}/server ${FILE_PATH}/${server_RANDOMNESS}
+  if [ -e ${FILE_PATH}/server ] && [ ${openserver} -eq 1 ]; then
+    mv ${FILE_PATH}/server ${FILE_PATH}/${server_randomness}
   fi
 
+  mv ${FILE_PATH}/data ${FILE_PATH}/${data_randomness}
+
   if [ -n "${NEZHA_SERVER}" ] && [ -n "${NEZHA_KEY}" ]; then
-    mv ${FILE_PATH}/agent ${FILE_PATH}/${nez_RANDOMNESS}
+    mv ${FILE_PATH}/agent ${FILE_PATH}/${nez_randomness}
     tlsPorts=("443" "8443" "2096" "2087" "2083" "2053")
-    if [[ "${tlsPorts[*]}" =~ "${NEZHA_PORT}" ]]; then
-        NEZHA_TLS="--tls"
+    if [[ " ${tlsPorts[@]} " =~ " ${NEZHA_PORT} " ]]; then
+      NEZHA_TLS="--tls"
     else
-        NEZHA_TLS=""
+      NEZHA_TLS=""
     fi
   fi
 
@@ -316,20 +317,20 @@ module.exports = {
   "apps":[
       {
           "name":"data",
-          "script":"${FILE_PATH}/${data_RANDOMNESS} run -c ${FILE_PATH}/out.json"
+          "script":"${FILE_PATH}/${data_randomness} run -c ${FILE_PATH}/out.json"
 ABC
-  [ ${openserver} -gt 0 ] && cat >> ${FILE_PATH}/ecosystem.config.js << DEF
+  [ ${openserver} -eq 1 ] && cat >> ${FILE_PATH}/ecosystem.config.js << DEF
       },
       {
           "name":"server",
-          "script":"${FILE_PATH}/${server_RANDOMNESS} ${args}",
+          "script":"${FILE_PATH}/${server_randomness} ${args}",
 DEF
   [[ -n "${NEZHA_SERVER}" && -n "${NEZHA_KEY}" ]] && cat >> ${FILE_PATH}/ecosystem.config.js << HIJ
       },
       {
           "name":"agent",
-          "script":"${FILE_PATH}/${nez_RANDOMNESS}",
-          "args":"-s ${NEZHA_SERVER}:443 -p ${NEZHA_KEY} ${NEZHA_TLS}"
+          "script":"${FILE_PATH}/${nez_randomness}",
+          "args":"-s ${NEZHA_SERVER}:${NEZHA_PORT} -p ${NEZHA_KEY} ${NEZHA_TLS}"
 HIJ
   cat >> ${FILE_PATH}/ecosystem.config.js << KLM
       }
@@ -344,41 +345,24 @@ generate_pm2_file
 
 sleep 30
 
-# 获取服务器的公共IP地址及国家简称
-function read_country() {
-  server_ip=$(curl -s https://ipinfo.io/ip)
+# ip and country
+export server_ip=$(curl -s https://speed.cloudflare.com/meta | tr ',' '\n' | grep -E '"clientIp"\s*:\s*"' | sed 's/.*"clientIp"\s*:\s*"\([^"]*\)".*/\1/')
+export country_abbreviation=$(curl -s https://speed.cloudflare.com/meta | tr ',' '\n' | grep -E '"country"\s*:\s*"' | sed 's/.*"country"\s*:\s*"\([^"]*\)".*/\1/')
 
-  if [ -z "$server_ip" ]; then
-    echo "UN" > ${FILE_PATH}/country.txt
-    return
-  fi
-
-  if [ -z "${apikey}" ]; then
-    response=$(curl -s "https://ipinfo.io/${server_ip}/country")
-  else
-    response=$(curl -s "https://ipinfo.io/${server_ip}/country?token=${apikey}")
-  fi
-
-  status_code=$(echo "$response" | grep -o '"title": "Rate limit exceeded"')
-
-  if [ -n "${status_code}" ]; then
-    echo "UN" > ${FILE_PATH}/country.txt
-  else
-    country_abbreviation=$(echo "$response")
-    echo "$country_abbreviation" > ${FILE_PATH}/country.txt
-  fi
-}
-
-read_country
-
+# list
 list() {
-if [ -z "$ARGO_AUTH" ] && [ -z "$ARGO_DOMAIN" ]; then
-  [ -s ${FILE_PATH}/boot.log ] && export ARGO_DOMAIN=$(cat ${FILE_PATH}/boot.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
-fi
-country_abbreviation=$(cat ${FILE_PATH}/country.txt)
+  if [ -z "$ARGO_AUTH" ] && [ -z "$ARGO_DOMAIN" ]; then
+    [ -s ${FILE_PATH}/boot.log ] && export ARGO_DOMAIN=$(cat ${FILE_PATH}/boot.log | grep -o "info.*https://.*trycloudflare.com" | sed "s@.*https://@@g" | tail -n 1)
+  fi
+
+  # openserver不等于1
+  if [ ${openserver} -ne 1 ]; then
+    export ARGO_DOMAIN="${server_ip}"
+  fi
+
 VMESS="{ \"v\": \"2\", \"ps\": \"vmess-${country_abbreviation}-${SUB_NAME}\", \"add\": \"${CF_IP}\", \"port\": \"443\", \"id\": \"${UUID}\", \"aid\": \"0\", \"scy\": \"none\", \"net\": \"ws\", \"type\": \"none\", \"host\": \"${ARGO_DOMAIN}\", \"path\": \"/${VMESS_WSPATH}?ed=2048\", \"tls\": \"tls\", \"sni\": \"${ARGO_DOMAIN}\", \"alpn\": \"\" }"
 
-  cat > ${FILE_PATH}/list.txt <<ABC
+  cat > ${FILE_PATH}/list.txt << ABC
 ***************************************************
 
       IP : ${server_ip}     Country： ${country_abbreviation}
@@ -392,22 +376,19 @@ vless://${UUID}@${CF_IP}:443?host=${ARGO_DOMAIN}&path=%2F${VLESS_WSPATH}%3Fed%3D
 ***************************************************
 ABC
 
-  cat > ${FILE_PATH}/encode.txt <<EOF
+  cat > ${FILE_PATH}/encode.txt << EOF
 vmess://$(echo "$VMESS" | base64 | tr -d '\n')
 vless://${UUID}@${CF_IP}:443?host=${ARGO_DOMAIN}&path=%2F${VLESS_WSPATH}%3Fed%3D2048&type=ws&encryption=none&security=tls&sni=${ARGO_DOMAIN}#vless-${country_abbreviation}-${SUB_NAME}
 EOF
 
-base64 ${FILE_PATH}/encode.txt | tr -d '\n' > ${FILE_PATH}/sub.txt
-# cat ${FILE_PATH}/list.txt
-# echo -e "\n节点信息已保存在 list.txt"
-rm ${FILE_PATH}/encode.txt
+  base64 ${FILE_PATH}/encode.txt | tr -d '\n' > ${FILE_PATH}/sub.txt
+  rm ${FILE_PATH}/encode.txt
 }
 
+# up
 if [ -z "$SUB_URL" ]; then
-list
-
+  list
 else
-list
-
-bash ${FILE_PATH}/up.sh >/dev/null 2>&1 &
+  list
+  bash ${FILE_PATH}/up.sh >/dev/null 2>&1 &
 fi

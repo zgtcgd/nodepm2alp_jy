@@ -16,7 +16,6 @@ app.get("/healthcheck", function (req, res) {
   res.status(200).send("ok");
 });
 
-//获取节点数据
 app.get("/list", function (req, res) {
   let filePath = FILE_PATH + "/list.txt";
   fs.readFile(filePath, (err, data) => {
@@ -29,7 +28,6 @@ app.get("/list", function (req, res) {
   });
 });
 
-//获取订阅数据
 app.get("/sub", (req, res) => {
   let subfilePath = FILE_PATH + "/sub.txt";
   fs.readFile(subfilePath, (err, data) => {
