@@ -4,7 +4,7 @@
   "description": "Hello-World",
   "main": "index.js",
   "repository": "",
-  "author": "MIT",
+  "author": "def",
   "license": "MIT",
   "scripts": {
   "start": "node index.js"
