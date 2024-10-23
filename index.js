@@ -2,10 +2,10 @@ const port = process.env.PORT || 3000;
 const FILE_PATH = process.env.FILE_PATH || '/tmp';
 const axios = require("axios");
 const projectPageURL = process.env.URL || '';
-const intervalInMilliseconds = process.env.TIME || 5 * 60 * 1000;
+const intervalInseconds = process.env.TIME || 180;
 const express = require("express");
 const app = express();
-var fs = require("fs");
+const fs = require("fs");
 const { spawn } = require('child_process');
 
 app.get("/", function (req, res) {
@@ -17,19 +17,19 @@ app.get("/healthcheck", function (req, res) {
 });
 
 app.get("/list", function (req, res) {
-  let filePath = FILE_PATH + "/list.txt";
+  let filePath = FILE_PATH + "/tmp.txt";
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      res.type("html").send("<pre>文件读取错误：\n" + err + "</pre>");
+      res.type("html").send("<pre>File read error：\n" + err + "</pre>");
     }
     else {
-      res.type("html").send("<pre>节点数据：\n\n" + data + "</pre>");
+      res.type("html").send("<pre>Node data：\n\n" + data + "</pre>");
     }
   });
 });
 
 app.get("/sub", (req, res) => {
-  let subfilePath = FILE_PATH + "/sub.txt";
+  let subfilePath = FILE_PATH + "/log.txt";
   fs.readFile(subfilePath, (err, data) => {
     if (err) {
       res.status(500).send('Error reading file');
@@ -40,22 +40,20 @@ app.get("/sub", (req, res) => {
   });
 });
 
-// 启动主程序
+// run
 const startScriptPath = `/app/start.sh`;
 const childProcess = spawn(startScriptPath, [], {
   detached: false,
   stdio: 'inherit',
 });
 
-// 自动访问项目URL
+// Automatically access project URLs
 let hasLoggedEmptyMessage = false;
 async function visitProjectPage() {
   try {
-    // 如果URL和TIME变量为空时跳过访问项目URL
-    if (!projectPageURL || !intervalInMilliseconds) {
+    if (!projectPageURL || !intervalInseconds) {
       if (!hasLoggedEmptyMessage) {
-        console.log("URL or TIME variable is empty,Skipping visit url");
-        console.clear()
+        // console.log("URL or TIME variable is empty,skip visit url");
         hasLoggedEmptyMessage = true;
       }
       return;
@@ -64,14 +62,14 @@ async function visitProjectPage() {
     }
 
     await axios.get(projectPageURL);
-    // console.log(`Visiting project page: ${projectPageURL}`);
+    console.log(`Visiting project page: ${projectPageURL}`);
     console.log('Page visited successfully');
-    console.clear()
+    // console.clear()
   } catch (error) {
     console.error('Error visiting project page:', error.message);
   }
 }
-setInterval(visitProjectPage, intervalInMilliseconds);
+setInterval(visitProjectPage, intervalInseconds * 1000);
 
 visitProjectPage();
 
