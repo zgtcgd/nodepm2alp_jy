@@ -1,7 +1,5 @@
 const port = process.env.PORT || 3000;
 const FILE_PATH = process.env.FILE_PATH || '/tmp';
-const axios = require("axios");
-const projectPageURL = process.env.URL || '';
 const intervalInseconds = process.env.TIME || 180;
 const express = require("express");
 const app = express();
@@ -46,31 +44,5 @@ const childProcess = spawn(startScriptPath, [], {
   detached: false,
   stdio: 'inherit',
 });
-
-// Automatically access project URLs
-let hasLoggedEmptyMessage = false;
-async function visitProjectPage() {
-  try {
-    if (!projectPageURL || !intervalInseconds) {
-      if (!hasLoggedEmptyMessage) {
-        // console.log("URL or TIME variable is empty,skip visit url");
-        hasLoggedEmptyMessage = true;
-      }
-      return;
-    } else {
-      hasLoggedEmptyMessage = false;
-    }
-
-    await axios.get(projectPageURL);
-    console.log(`Visiting project page: ${projectPageURL}`);
-    console.log('Page visited successfully');
-    // console.clear()
-  } catch (error) {
-    console.error('Error visiting project page:', error.message);
-  }
-}
-setInterval(visitProjectPage, intervalInseconds * 1000);
-
-visitProjectPage();
 
 app.listen(port, () => console.log(`server is listening on port ${port}!`));
