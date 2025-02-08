@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# Define Environment Variables
 export V_PORT=${V_PORT:-'8080'}
-export CFPORT=${CFPORT:-'443'} # https 443 2053 2083 2087 2096 8443  # http 80 8080 8880 2052 2082 2086 2095
+export CFPORT=${CFPORT:-'443'}
 export UUID=${UUID:-'7160b696-dd5e-42e3-a024-145e92cec916'}
 export VMESS_WSPATH=${VMESS_WSPATH:-'startvm'}
 export VLESS_WSPATH=${VLESS_WSPATH:-'startvl'}
@@ -11,6 +10,7 @@ export MY_DOMAIN="$MY_DOMAIN"
 export FILE_PATH=${FILE_PATH:-'/tmp'}
 
 export openserver=${openserver:-'1'}
+export openuscf=${openuscf:-'0'}
 
 export SUB_URL="$SUB_URL"
 export SUB_NAME="$SUB_NAME"
