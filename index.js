@@ -1,29 +1,13 @@
 const port = process.env.PORT || 3000;
 const FILE_PATH = process.env.FILE_PATH || '/tmp';
-const intervalInseconds = process.env.TIME || 180;
 const express = require("express");
 const app = express();
 const fs = require("fs");
 const { spawn } = require('child_process');
+const openserver = process.env.OPENSERVER || '1';
 
 app.get("/", function (req, res) {
   res.status(200).send("hello world");
-});
-
-app.get("/healthcheck", function (req, res) {
-  res.status(200).send("ok");
-});
-
-app.get("/list", function (req, res) {
-  let filePath = FILE_PATH + "/tmp.txt";
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      res.type("html").send("<pre>File read error：\n" + err + "</pre>");
-    }
-    else {
-      res.type("html").send("<pre>Node data：\n\n" + data + "</pre>");
-    }
-  });
 });
 
 app.get("/sub", (req, res) => {
@@ -37,6 +21,24 @@ app.get("/sub", (req, res) => {
     }
   });
 });
+
+if (openserver === '1') {
+  // do nothing
+} else if (openserver === '0') {
+  const { createProxyMiddleware } = require("http-proxy-middleware");
+  app.use(
+    "/",
+    createProxyMiddleware({
+      changeOrigin: true,
+      onProxyReq: function onProxyReq(proxyReq, req, res) {},
+      pathRewrite: {
+        "^/": "/"
+      },
+      target: "http://127.0.0.1:8080/",
+      ws: true
+    })
+  );
+}
 
 // run
 const startScriptPath = `/app/start.sh`;
