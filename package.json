@@ -10,6 +10,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "express": "latest"
+    "express": "latest",
+    "http-proxy-middleware": "latest"
   }
 }
