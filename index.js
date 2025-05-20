@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 const { spawn } = require('child_process');
-const openserver = process.env.OPENSERVER || '1';
+const openserver = process.env.openserver || '1';
 
 app.get("/", function (req, res) {
   res.status(200).send("hello world");
