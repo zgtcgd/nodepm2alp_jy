@@ -2,7 +2,7 @@ FROM node:alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache --update bash curl procps
+RUN apk add --no-cache --update bash wget curl procps
 
 COPY package.json ./
 RUN npm install && \
