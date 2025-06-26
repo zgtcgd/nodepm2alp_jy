@@ -2,16 +2,17 @@ FROM node:alpine
 
 WORKDIR /app
 
-COPY app.js package.json start.sh /app/
+RUN apk add --no-cache --update bash curl procps
+
+COPY package.json ./
+RUN npm install && \
+    npm install -g pm2 && \
+    npm cache clean --force
+
+COPY app.js start.sh ./
+RUN chmod +x start.sh
 
 EXPOSE 3000
-
 ENV PM2_HOME=/tmp
 
-RUN apk update && \
-    apk add --no-cache bash wget curl procps && \
-    chmod -v 755 start.sh && \
-    npm install && \
-    npm install -g pm2
-
-ENTRYPOINT [ "node", "/app/app.js" ]
+CMD [ "node", "app.js" ]
