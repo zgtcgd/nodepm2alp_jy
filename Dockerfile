@@ -2,7 +2,7 @@ FROM node:alpine
 
 WORKDIR /app
 
-COPY index.js package.json start.sh /app/
+COPY app.js package.json start.sh /app/
 
 EXPOSE 3000
 
@@ -14,4 +14,4 @@ RUN apk update && \
     npm install && \
     npm install -g pm2
 
-ENTRYPOINT [ "node", "/app/index.js" ]
+ENTRYPOINT [ "node", "/app/app.js" ]
