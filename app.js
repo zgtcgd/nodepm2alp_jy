@@ -4,6 +4,7 @@ const UUID = process.env.UUID;
 const express = require("express");
 const app = express();
 const fs = require("fs");
+const path = require("path");
 const { spawn } = require('child_process');
 const OPENSERVER = process.env.OPENSERVER || '1';
 
