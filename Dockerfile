@@ -2,8 +2,7 @@ FROM node:alpine
 
 WORKDIR /app
 
-ARG PORT=3000
-ENV PORT=$PORT
+ENV PORT=3000
 EXPOSE $PORT
 
 COPY package.json ./
