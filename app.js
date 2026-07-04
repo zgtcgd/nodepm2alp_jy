@@ -6,10 +6,25 @@ const app = express();
 const fs = require("fs");
 const path = require("path");
 const { spawn } = require('child_process');
-const OPENSERVER = process.env.OPENSERVER || '1';
+const ENABLE_ARGO = process.env.ENABLE_ARGO || '1';
 
-app.get("/", function (req, res) {
-  res.status(200).send("hello world");
+app.get('/', (req, res) => {
+  const indexPath = path.join(__dirname, 'index.html');
+  fs.access(indexPath, fs.constants.F_OK, (err) => {
+    if (err) {
+      res.status(200).send('hello world');
+      return;
+    }
+
+    res.sendFile(indexPath, {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    }, (error) => {
+      if (error) {
+        console.error(error);
+        res.status(500).send('Error reading file');
+      }
+    });
+  });
 });
 
 app.get(`/${UUID}`, (req, res) => {
@@ -22,9 +37,9 @@ app.get(`/${UUID}`, (req, res) => {
   });
 });
 
-if (OPENSERVER === '1') {
+if (ENABLE_ARGO === '1') {
   // do nothing
-} else if (OPENSERVER === '0') {
+} else if (ENABLE_ARGO === '0') {
   const { createProxyMiddleware } = require("http-proxy-middleware");
   app.use(
     "/",
