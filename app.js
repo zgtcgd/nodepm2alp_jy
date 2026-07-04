@@ -12,18 +12,12 @@ app.get('/', (req, res) => {
   const indexPath = path.join(__dirname, 'index.html');
   fs.access(indexPath, fs.constants.F_OK, (err) => {
     if (err) {
-      res.status(200).send('hello world');
-      return;
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('hello world');
+    } else {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      fs.createReadStream(indexPath).pipe(res);
     }
-
-    res.sendFile(indexPath, {
-      headers: { 'Content-Type': 'text/html; charset=utf-8' }
-    }, (error) => {
-      if (error) {
-        console.error(error);
-        res.status(500).send('Error reading file');
-      }
-    });
   });
 });
 
